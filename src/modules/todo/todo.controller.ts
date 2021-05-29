@@ -1,6 +1,8 @@
 import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post} from '@nestjs/common';
-import { Todo } from './models/todo.model';
+import {Todo} from './models/todo.model';
+import {ApiBody, ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Todos')
 @Controller('todos')
 export class TodoController {
   private index = 4;
@@ -27,6 +29,11 @@ export class TodoController {
     return this.todos;
   }
 
+  @Get(':id')
+  async getOne(@Param('id', ParseIntPipe) id:number) {
+    return this.todos.find(item=>item.id===id);
+  }
+
   @Post()
   async create(@Body() dto: Todo): Promise<Todo> {
     this.index++;
@@ -41,7 +48,7 @@ export class TodoController {
   }
 
   @Delete(':id')
-  async delete(@Param('id', new ParseIntPipe()) id: number){
+  async delete(@Param('id', ParseIntPipe) id: number){
     const delItem = this.todos.find(item=>item.id===id);
 
     this.todos = this.todos.filter(item=>{
@@ -51,8 +58,9 @@ export class TodoController {
     return delItem;
   }
 
+  @ApiBody({ type: Todo })
   @Patch(':id')
-  async update(@Param('id', new ParseIntPipe()) id: number, @Body('isCompleted') isCompleted: boolean){
+  async update(@Param('id', ParseIntPipe) id: number, @Body('isCompleted') isCompleted: boolean){
 
     this.todos = this.todos.map(item=>{
       return item.id !== id ? item : {...item, isCompleted}
