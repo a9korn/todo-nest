@@ -2,6 +2,7 @@ import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Validat
 import {Todo} from './models/todo.model';
 import {ApiBody, ApiTags} from "@nestjs/swagger";
 import {UpdateDto} from "./dto/update.dto";
+import {CreateDto} from "./dto/create.dto";
 
 @ApiTags('Todos')
 @Controller('todos')
@@ -36,12 +37,12 @@ export class TodoController {
   }
 
   @Post()
-  async create(@Body() dto: Todo): Promise<Todo> {
+  async create(@Body() createDto: CreateDto): Promise<Todo> {
     this.index++;
     const newTodo: Todo = {
       id: this.index,
-      title: dto.title,
-      isCompleted: false,
+      title: createDto.title,
+      isCompleted: createDto.isCompleted || false,
     };
 
     this.todos.push(newTodo);
