@@ -1,6 +1,7 @@
-import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, ValidationPipe} from '@nestjs/common';
 import {Todo} from './models/todo.model';
 import {ApiBody, ApiTags} from "@nestjs/swagger";
+import {UpdateDto} from "./dto/update.dto";
 
 @ApiTags('Todos')
 @Controller('todos')
@@ -58,16 +59,13 @@ export class TodoController {
     return delItem;
   }
 
-  @ApiBody({ type: Todo })
+  @ApiBody({ type: UpdateDto })
   @Patch(':id')
-  async update(@Param('id', ParseIntPipe) id: number, @Body('isCompleted') isCompleted: boolean){
-
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateDto){
     this.todos = this.todos.map(item=>{
-      return item.id !== id ? item : {...item, isCompleted}
+      return item.id !== id ? item : {...item, title: updateDto.title, isCompleted: updateDto.isCompleted}
     });
 
-    const updateItem = this.todos.find(item=>item.id===id);
-
-    return updateItem;
+    return  this.todos.find(item=>item.id===id);
   }
 }
