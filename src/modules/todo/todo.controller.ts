@@ -1,72 +1,47 @@
-import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, ValidationPipe} from '@nestjs/common';
-import {Todo} from './models/todo.model';
-import {ApiBody, ApiTags} from "@nestjs/swagger";
-import {UpdateDto} from "./dto/update.dto";
-import {CreateDto} from "./dto/create.dto";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { Todo } from './models/todo.model';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { UpdateDto } from './dto/update.dto';
+import { CreateDto } from './dto/create.dto';
+import { TodoService } from './todo.service';
 
 @ApiTags('Todos')
 @Controller('todos')
 export class TodoController {
-  private index = 4;
-  private todos: Todo[] = [
-    {
-      id: 1,
-      title: 'first todo',
-      isCompleted: false,
-    },
-    {
-      id: 2,
-      title: 'second todo',
-      isCompleted: true,
-    },
-    {
-      id: 3,
-      title: '3 todo',
-      isCompleted: false,
-    },
-  ];
+  constructor(private todoService: TodoService) {}
 
   @Get()
   async getAll() {
-    return this.todos;
+    return this.todoService.getAll();
   }
 
   @Get(':id')
-  async getOne(@Param('id', ParseIntPipe) id:number) {
-    return this.todos.find(item=>item.id===id);
+  async getOne(@Param('id', ParseIntPipe) id: number) {
+    return this.todoService.getOne(id);
   }
 
   @Post()
   async create(@Body() createDto: CreateDto): Promise<Todo> {
-    this.index++;
-    const newTodo: Todo = {
-      id: this.index,
-      title: createDto.title,
-      isCompleted: createDto.isCompleted || false,
-    };
-
-    this.todos.push(newTodo);
-    return newTodo;
+    return this.todoService.create(createDto);
   }
 
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number){
-    const delItem = this.todos.find(item=>item.id===id);
-
-    this.todos = this.todos.filter(item=>{
-      return item.id !== delItem.id
-    });
-
-    return delItem;
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return this.todoService.delete(id);
   }
 
   @ApiBody({ type: UpdateDto })
-  @Patch(':id')
-  async update(@Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateDto){
-    this.todos = this.todos.map(item=>{
-      return item.id !== id ? item : {...item, title: updateDto.title, isCompleted: updateDto.isCompleted}
-    });
-
-    return  this.todos.find(item=>item.id===id);
+  @Patch()
+  async update(@Body() updateDto: UpdateDto) {
+    return this.todoService.update(updateDto);
   }
 }
