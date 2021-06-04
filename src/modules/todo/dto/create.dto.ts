@@ -3,7 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateDto {
   @IsString()
-  @IsOptional()
   @ApiProperty({ type: String, default: 'My new label' })
   label: string;
 
