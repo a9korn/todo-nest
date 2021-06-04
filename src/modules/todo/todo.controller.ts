@@ -1,9 +1,22 @@
-import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, ValidationPipe} from '@nestjs/common';
-import {Todo} from './models/todo.model';
-import {ApiBody, ApiTags} from "@nestjs/swagger";
-import {UpdateDto} from "./dto/update.dto";
-import {CreateDto} from "./dto/create.dto";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  UseGuards,
+  ValidationPipe,
+} from '@nestjs/common';
+import { Todo } from './models/todo.model';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { UpdateDto } from './dto/update.dto';
+import { CreateDto } from './dto/create.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 
+@UseGuards(JwtAuthGuard)
 @ApiTags('Todos')
 @Controller('todos')
 export class TodoController {
@@ -32,8 +45,8 @@ export class TodoController {
   }
 
   @Get(':id')
-  async getOne(@Param('id', ParseIntPipe) id:number) {
-    return this.todos.find(item=>item.id===id);
+  async getOne(@Param('id', ParseIntPipe) id: number) {
+    return this.todos.find((item) => item.id === id);
   }
 
   @Post()
@@ -50,11 +63,11 @@ export class TodoController {
   }
 
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number){
-    const delItem = this.todos.find(item=>item.id===id);
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    const delItem = this.todos.find((item) => item.id === id);
 
-    this.todos = this.todos.filter(item=>{
-      return item.id !== delItem.id
+    this.todos = this.todos.filter((item) => {
+      return item.id !== delItem.id;
     });
 
     return delItem;
@@ -62,11 +75,20 @@ export class TodoController {
 
   @ApiBody({ type: UpdateDto })
   @Patch(':id')
-  async update(@Param('id', ParseIntPipe) id: number, @Body() updateDto: UpdateDto){
-    this.todos = this.todos.map(item=>{
-      return item.id !== id ? item : {...item, title: updateDto.title, isCompleted: updateDto.isCompleted}
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateDto: UpdateDto,
+  ) {
+    this.todos = this.todos.map((item) => {
+      return item.id !== id
+        ? item
+        : {
+            ...item,
+            title: updateDto.title,
+            isCompleted: updateDto.isCompleted,
+          };
     });
 
-    return  this.todos.find(item=>item.id===id);
+    return this.todos.find((item) => item.id === id);
   }
 }

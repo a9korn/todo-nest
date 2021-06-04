@@ -8,9 +8,8 @@ export class UserService {
   private index = 0;
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const newUser: User = { id: this.index, ...createUserDto };
+    const newUser: User = { id: this.index++, ...createUserDto };
     await this.users.push(newUser);
-    this.index++;
     console.log(`User was created: ${newUser.email}`);
     return newUser;
   }
