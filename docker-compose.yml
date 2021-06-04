@@ -1,0 +1,19 @@
+version: "3"
+
+networks:
+  todo:
+
+services:
+  todo-api:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: todo_api
+    restart: always
+    volumes:
+      - /usr/src/app/node_modules
+    ports:
+      - 3065:3065
+    networks:
+      - todo
+
