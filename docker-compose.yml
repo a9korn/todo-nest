@@ -17,3 +17,22 @@ services:
     networks:
       - todo
 
+  # Local DB instance
+  todo-db:
+    image: postgres:12-alpine
+    container_name: todo_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: todopass
+      POSTGRES_USER: todouser
+      POSTGRES_DB: todo
+      POSTGRES_HOST_AUTH_METHOD: trust
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finverity"]
+      timeout: 5s
+      interval: 10s
+      retries: 3
+    ports:
+      - 5435:5432
+    networks:
+      - todo
