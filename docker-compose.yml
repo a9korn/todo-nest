@@ -9,7 +9,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     container_name: todo_api
-    restart: always
+#    restart: always
     volumes:
       - /usr/src/app/node_modules
     ports:
