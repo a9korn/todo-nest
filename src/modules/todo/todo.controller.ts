@@ -1,19 +1,10 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-} from '@nestjs/common';
-import { Todo } from './models/todo.model';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { UpdateDto } from './dto/update.dto';
-import { CreateDto } from './dto/create.dto';
-import { TodoService } from './todo.service';
+import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, ValidationPipe} from '@nestjs/common';
+import {Todo} from './models/todo.model';
+import {ApiBody, ApiTags} from "@nestjs/swagger";
+import {UpdateDto} from "./dto/update.dto";
+import {CreateDto} from "./dto/create.dto";
 
+@UseGuards(JwtAuthGuard)
 @ApiTags('Todos')
 @Controller('todos')
 export class TodoController {
