@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Todo } from './models/todo.model';
 import { CreateDto } from './dto/create.dto';
 import { UpdateDto } from './dto/update.dto';
+import { Repository } from 'typeorm';
+import { TODO_REPOSITORY } from '../../app.constants';
 
 @Injectable()
 export class TodoService {
   public index = 4;
   private todos: Todo[] = [];
 
-  constructor() {
+  constructor(
+    @Inject(TODO_REPOSITORY) private todoRepository: Repository<Todo>,
+  ) {
     this.todos = [
       {
         id: 1,
