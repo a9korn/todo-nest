@@ -6,6 +6,9 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { DatabaseModule } from './db/database.module';
 import { ConfigModule } from '@nestjs/config';
+import { UtilsModule } from './modules/utils/utils.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -13,10 +16,15 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'public'),
+      serveRoot: '/images'
+    }),
     TodoModule,
     AuthModule,
     UserModule,
     DatabaseModule,
+    UtilsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
